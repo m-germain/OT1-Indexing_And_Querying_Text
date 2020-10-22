@@ -48,7 +48,7 @@ def main():
 
     for term in result.keys():
         for appearance in result[term]:
-            # Belgium: { docId: 1, frequency: 1}
+            # beer: { docId: 1, frequency: 1}
             document = store.get(appearance.docId)
             print(highlight_term(appearance.docId, term, document["text"]))
         print("-----------------------------")

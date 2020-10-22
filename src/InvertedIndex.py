@@ -1,5 +1,7 @@
 import re
 from Appearance import Appearance
+from nltk.corpus import stopwords
+from nltk.stem.snowball import EnglishStemmer
 
 
 class InvertedIndex:
@@ -10,6 +12,8 @@ class InvertedIndex:
     def __init__(self, store):
         self.index = dict()
         self.store = store
+        self.stop_words = set(stopwords.words("english"))
+        self.stemmer = EnglishStemmer
 
     def __repr__(self):
         """
@@ -27,16 +31,24 @@ class InvertedIndex:
         # TODO We remove the Stop Words.
         # We split each terms.
         terms = clean_text.split(" ")
+
         appearances_dict = dict()
 
-        # TODO We use stemming before storing.
         # Dictionary with each term and the frequency it appears in the text.
         # TODO Update the Terme calculation for optimization. See PEP Diapo.
+
         for term in terms:
-            term_frequency = (
-                appearances_dict[term].frequency if term in appearances_dict else 0
-            )
-            appearances_dict[term] = Appearance(document["id"], term_frequency + 1)
+            if term.lower() not in self.stop_words:
+                stemmed_term = self.stemmer().stem(term)
+
+                term_frequency = (
+                    appearances_dict[stemmed_term].frequency
+                    if stemmed_term in appearances_dict
+                    else 0
+                )
+                appearances_dict[stemmed_term] = Appearance(
+                    document["id"], term_frequency + 1
+                )
 
         # Update the inverted index
         update_dict = {
@@ -57,6 +69,7 @@ class InvertedIndex:
         the documents where they appear.
         """
         # TODO More advanced search engine W/ word 2 vect, similarity and better treatment of more then 1 word in query.
+        # we could use some steming when reading the query
         return {
             term: self.index[term] for term in query.split(" ") if term in self.index
         }
