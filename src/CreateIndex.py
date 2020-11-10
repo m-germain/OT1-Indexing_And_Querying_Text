@@ -13,16 +13,17 @@ def main():
 
     document1 = {
         "id": "1",
-        "text": "Any King Henry King King can secretly admire a Busch, but it takes a real rattlesnake to stumbly steal women from some Dos Equis beyond a malt. Indeed, a lager beyond some bill knows a blood clot. A Luna Sea ESB defined by a Sam Adams is frustrating. When the snooty steam engine feels nagging remorse, a discusting Ellis Island IPA flies into a rage.",
+        "text": "In information retrieval, tf–idf or TFIDF, short for term frequency–inverse document frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus."
     }
     document2 = {
         "id": "20",
-        "text": "The Pilsner King Urquell about a Jamaica Red Ale hides, or a Left Hand Milk Stout eats the overpriced micro brew. Indeed, the Miller plays pinochle with a coors light. The Hefeweizen is financial. Now and then, a scooby snack for some Bridgeport ESB writes a love letter to a mating ritual of another Rolling Rock. Most people believe that a sake bomb toward a Rolling Rock gives the last beer to the Home brew toward the Keystone, but they need to remember how seldom the thoroughly bombed chain saw goes to sleep.",
+        "text": "China is a country located in East Asia bordering fourteen other countries, including Mongolia to the north; Kazakhstan, Kyrgyzstan, Tajikistan, Afghanistan, and Pakistan to the west; India, Nepal, and Bhutan to the southwest; Myanmar, Laos, and Vietnam to the south; "
     }
     document3 = {
         "id": "21",
-        "text": "When you see the King micro brew defined by a Dos Equis, it means that an annoying coors light wakes up. Some mating ritual near a Mango Beer trades baseball cards with a malt behind a Miller. A line dancer procrastinates, because some air hocky table thoroughly assimilates the Budweiser of a Pilsner Urquell. The ridiculously dorky Labatts reaches an understanding with the Heineken toward a Left Hand Milk Stout.",
-    }
+        "text": "Water is an inorganic, transparent, tasteless, odorless, and nearly colorless chemical substance, which is the main constituent of Earth's hydrosphere and the fluids of all known living organisms. "
+   }
+   
     index.index_document(document1)
     index.index_document(document2)
     index.index_document(document3)
