@@ -141,6 +141,8 @@ class InvertedIndex:
         # TODO More advanced search engine W/ word 2 vect, similarity and better treatment of more then 1 word in query.
         # we could use some steming when reading the query
 
+        query = re.sub(r"[^\w\s]", "", query)
+
         query = query.split(" ")
         query = map(lambda x: self.stemmer().stem(x), query)
 
@@ -152,7 +154,7 @@ class InvertedIndex:
 
             # find relevant documents
             for q in query:
-                val = self.mmap.get(q)
+                val = self.mmap.get(q, "")
 
                 if( val != "" ): # key exists
                     startpos = vbcode.decode(val[0])[0]
