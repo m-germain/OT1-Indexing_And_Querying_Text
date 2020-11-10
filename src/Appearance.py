@@ -15,4 +15,16 @@ class Appearance:
         """
         String representation of Appearance object
         """
-        return str(self.__dict__)
+        return "["+str(self.docId)+", "+str(self.frequency)+"]"
+
+    def getDocId(self):
+        return self.docId
+
+    def getFrequency(self):
+        return self.frequency
+
+    def updateDocID(self, docId):
+        self.docId = docId
+
+    def updateFrequency(self, frequency):
+        self.frequency = frequency

@@ -21,6 +21,9 @@ class Storage:
         """
         return self.store.update({document["id"]: document})
 
+    def count(self):
+        return len(self.store)
+
     def remove(self, document):
         """
         Removes document from the Store.
