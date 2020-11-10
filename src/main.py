@@ -1,3 +1,6 @@
+import nltk
+#nltk.download('stopwords')
+
 from Storage import Storage
 from InvertedIndex import InvertedIndex
 

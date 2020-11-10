@@ -70,6 +70,10 @@ class InvertedIndex:
         """
         # TODO More advanced search engine W/ word 2 vect, similarity and better treatment of more then 1 word in query.
         # we could use some steming when reading the query
+
+        query = query.split(" ")
+        query = map(lambda x: self.stemmer().stem(x), query)
+
         return {
-            term: self.index[term] for term in query.split(" ") if term in self.index
+            term: self.index[term] for term in query if term in self.index
         }
