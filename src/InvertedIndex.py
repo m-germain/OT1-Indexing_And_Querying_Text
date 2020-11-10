@@ -174,7 +174,12 @@ class InvertedIndex:
                         i = i+1
             
             # find the 3 top elements
-            for key,value in dd.items(): 
-                print(str(key)+" => "+str(statistics.mean(value)))
+            arr = []
 
+            for key,value in dd.items(): 
+                arr.append([key, statistics.mean(value)])
+            
+            arr = sorted(arr, key=lambda w: w[1])
+
+            print(arr)
             mm.close()

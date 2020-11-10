@@ -36,5 +36,4 @@ def main():
     search_term = input("Enter term(s) to search: ")
     result = index.lookup_query(search_term)  
 
-
 main()
