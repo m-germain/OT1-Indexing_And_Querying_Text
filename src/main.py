@@ -2,9 +2,7 @@ import nltk
 #nltk.download('stopwords')
 
 from Storage import Storage
-import glob
 from InvertedIndex import InvertedIndex
-from FileReader import FileReader
 
 def highlight_term(id, term, text):
     # TODO Not good for the performances bcs we need to go throw the document to change the color.

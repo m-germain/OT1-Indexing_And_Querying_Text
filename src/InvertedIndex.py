@@ -94,11 +94,10 @@ class InvertedIndex:
         """
         Process a given document, save it to the Store and update the index.
         """
-
-        # Remove punctuation from the text.
-        clean_text = re.sub(r"[^\w\s]", "", document["text"])
-        # We remove the Stop Words.
-
+        print(document.doc_id)
+        # Remove punctuation && \n from the text.
+        clean_text = re.sub("\n", "", re.sub(r"[^\w\s]", "", document.text))
+        
         # We split each terms.
         terms = clean_text.split(" ")
 
@@ -115,7 +114,7 @@ class InvertedIndex:
                     else 0
                 )
                 appearances_dict[stemmed_term] = Appearance(
-                    document["id"], term_frequency + 1
+                    document.doc_id, term_frequency + 1
                 )
 
         # Update the inverted index
@@ -128,6 +127,7 @@ class InvertedIndex:
 
         self.index.update(update_dict)
         
+        print(update_dict)
         # Add the document into the database
         self.store.add(document)
         return document
