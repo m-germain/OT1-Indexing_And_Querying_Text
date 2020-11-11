@@ -1,3 +1,6 @@
+import nltk
+#nltk.download('stopwords')
+
 from Storage import Storage
 import glob
 from InvertedIndex import InvertedIndex
@@ -27,22 +30,11 @@ def shrink_text(text):
 
 def main():
     store = Storage()
+
     index = InvertedIndex(store)
-    files = glob.glob("data/*")
-    documents = []
-    
-    for file_path in files:
-        file_reader = FileReader(file_path)
-        documents += file_reader.listDoc
-
+    index.loadInvertedIndex("mmap", "posting_lists")
+   
     search_term = input("Enter term(s) to search: ")
-    result = index.lookup_query(search_term)
-
-    for term in result.keys():
-        for appearance in result[term]:
-            # beer: { docId: 1, frequency: 1}
-            document = store.get(appearance.docId)
-            print(highlight_term(appearance.docId, term, document["text"]))
-        print("-----------------------------")
+    result = index.lookup_query(search_term)  
 
 main()
