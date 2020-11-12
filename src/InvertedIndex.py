@@ -96,6 +96,7 @@ class InvertedIndex:
         """
         print(document.doc_id)
         # Remove punctuation && \n from the text.
+        #         clean_text = re.sub("\n", "", re.sub(r"[^\w\s]", "", document.["text"]))
         clean_text = re.sub("\n", "", re.sub(r"[^\w\s]", "", document.text))
         
         # We split each terms.

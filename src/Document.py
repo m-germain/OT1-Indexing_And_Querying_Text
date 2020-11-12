@@ -12,7 +12,7 @@ class Document:
         self.text = text
 
     def getFullText(self):
-        return self.headline + self.by_line + self.text
+        self.text
 
     def getId(self):
         return self.id
