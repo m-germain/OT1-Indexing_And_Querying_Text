@@ -19,7 +19,7 @@ class Storage:
         """
         Adds a document to the Store.
         """
-        return self.store.update({document["id"]: document})
+        return self.store.update({document.doc_id: document})
 
     def count(self):
         return len(self.store)
@@ -28,4 +28,4 @@ class Storage:
         """
         Removes document from the Store.
         """
-        return self.store.pop(document["id"], None)
+        return self.store.pop(document.doc_id, None)

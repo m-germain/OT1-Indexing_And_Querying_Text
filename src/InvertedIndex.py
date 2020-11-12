@@ -96,7 +96,7 @@ class InvertedIndex:
         """
 
         # Remove punctuation from the text.
-        clean_text = re.sub(r"[^\w\s]", "", document["text"])
+        clean_text = re.sub(r"[^\w\s]", "", document.text)
         # We remove the Stop Words.
 
         # We split each terms.
@@ -115,7 +115,7 @@ class InvertedIndex:
                     else 0
                 )
                 appearances_dict[stemmed_term] = Appearance(
-                    document["id"], term_frequency + 1
+                    document.doc_id, term_frequency + 1
                 )
 
         # Update the inverted index
@@ -169,17 +169,18 @@ class InvertedIndex:
                             dd[ element[0] ].append( element[1] )
                             previousDocId = element[0]
                         else: 
-                            docId = vbcode.decode(element[0])[0] +  previousDocId
+                            docId = int(vbcode.decode(element[0])[0]) +  previousDocId
                             dd[ docId ].append( element[1] )
                             previousDocId = docId
 
                         i = i+1
-            
+
+                
             # find the 3 top elements
             arr = []
 
             for key,value in dd.items(): 
-                arr.append([key, statistics.mean(value)])
+                arr.append([key, sum(value)])
             
             arr = sorted(arr, key=lambda w: w[1])
 
