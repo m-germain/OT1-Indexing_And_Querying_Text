@@ -175,19 +175,21 @@ class InvertedIndex:
                         if(len(a[start:start+2]) < 2):
                             break
 
-                        print(a[start:start+10])
-                        print(a[start:start+2])
-                        print(a[start+2:start+3])
-                      #  print(len(a[start:start+2]))
+                       # DEBUG
+                       # ------------------
+                       # print(a[start:start+10])
+                       # print(a[start:start+2])
+                       # print(a[start+2:start+3])
+                       # print(len(a[start:start+2]))
      
                         frequency = int.from_bytes(a[start:start+2], byteorder='big')/100
                         docId_length = int.from_bytes(a[start+2:start+3], byteorder='big')
                         
                         #print(docId_length)
-                        print(a[start+3:start+3+docId_length])
+                        #print(a[start+3:start+3+docId_length])
 
                         docId = int(vbcode.decode(a[start+3:start+3+docId_length])[0]) #+  previousDocId
-                        print(docId)
+                        #print(docId)
 
                         dd[ docId ].append( frequency )
                        # previousDocId = docId

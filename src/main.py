@@ -7,15 +7,17 @@ from InvertedIndex import InvertedIndex
 from FileReader import FileReader
 
 
-def highlight_term(id, term, text):
+def highlight_term(id, terms, text):
     # TODO Not good for the performances bcs we need to go throw the document to change the color.
+    replaced_text = text
 
-    replaced_text = text.replace(
-        # Bold High Intensty Yellow {term} Then Text Reset
-        # More info on https://gist.github.com/vratiu/9780109
-        term,
-        "\033[1;93m {term} \033[0;0m".format(term=term),
-    )
+    for term in terms:
+        replaced_text = replaced_text.replace(
+            # Bold High Intensty Yellow {term} Then Text Reset
+            # More info on https://gist.github.com/vratiu/9780109
+            term,
+            "\033[1;93m {term} \033[0;0m".format(term=term),
+        )
     return "--- document {id}: {replaced}".format(id=id, replaced=replaced_text)
 
 
@@ -48,11 +50,9 @@ def main():
     res = result[:3]
     for r in res:
         print("Score: "+ str(r[1]))
-        doc = list(filter(lambda x: x.getId() == r[0], documents))
+        doc = list(filter(lambda x: x.getId() == r[0], documents))[0]
 
-        print(doc)
-
-        #print(doc.getFullText())
+        print( highlight_term(doc.getId(), search_term.split(), doc.getFullText() ) )
         print("\n")
 
 main()
