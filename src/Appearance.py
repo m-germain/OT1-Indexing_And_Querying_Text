@@ -1,3 +1,5 @@
+import math
+
 class Appearance:
     """
     Appearance is : {docId , frequency}
@@ -16,6 +18,9 @@ class Appearance:
         String representation of Appearance object
         """
         return "["+str(self.docId)+", "+str(self.frequency)+"]"
+
+    def getDocFreq(self):
+        return [ int(self.docId), math.ceil(self.frequency*100) ]
 
     def getDocId(self):
         return self.docId

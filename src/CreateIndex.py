@@ -30,7 +30,7 @@ def main():
     files = glob.glob("data/*")
     documents = []
     
-    for file_path in files[:2]:
+    for file_path in files[:10]:
         file_reader = FileReader(file_path)
         documents += file_reader.listDoc
    
@@ -45,7 +45,7 @@ def main():
         f.write(str(mmap))
 
     # export posting lists
-    with open("posting_lists", "w") as f:
+    with open("posting_lists", "wb") as f:
         f.write(posting_lists)
 
 main()

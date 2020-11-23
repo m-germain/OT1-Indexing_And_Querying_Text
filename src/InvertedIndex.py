@@ -59,35 +59,37 @@ class InvertedIndex:
             i=0
             posting_list = sorted(posting_list, key=lambda w: w.getDocId())
 
-            for element in posting_list:
-                current = element.getDocId()
+            # for element in posting_list:
+            #    current = element.getDocId()
 
-                if(i > 0): 
-                    diff = int(current)-int(previous)
-                    element.updateDocID( vbcode.encode_number(diff) )
+            #    if(i > 0): 
+            #        diff = int(current)-int(previous)
+            #        element.updateDocID( diff )
                     
-                previous = current
-                i = i+1               
+            #    previous = current
+            #    i = i+1               
                 
             self.index.update({ term[0]: posting_list })
 
         ## print and build hmap
-        s = ""
+        s = bytearray()
         startpos = 0
 
         for term in self.index.items():
-            posting_list = term[1]
-            q = "["
 
-            for element in posting_list:
-                q += str(element)+", "
+            my_posting_list = bytearray()
 
-            q = q[:-2] + "]\n"
-            self.mmap.update({ term[0]: (vbcode.encode_number(startpos), vbcode.encode_number( len(q) )) })
+            for element in term[1]:
+                doc = vbcode.encode_number(element.getDocFreq()[0])
+                frequency = element.getDocFreq()[1].to_bytes(2, byteorder='big')
 
-            startpos = startpos + len(q) + 1
-            s += q
-    
+                my_posting_list  += frequency + len(doc).to_bytes(1, byteorder='big') + doc
+           
+            self.mmap.update({ term[0]: (startpos, len(my_posting_list)) })
+            startpos = startpos + len(my_posting_list) 
+
+            s += my_posting_list
+            
         return s
 
     def index_document(self, document):
@@ -107,7 +109,8 @@ class InvertedIndex:
         # Dictionary with each term and the frequency it appears in the text.
         for term in terms:
             if term.lower() not in self.stop_words:
-                stemmed_term = self.stemmer().stem(term)
+                #stemmed_term = self.stemmer().stem(term)
+                stemmed_term = term.strip()
 
                 term_frequency = (
                     appearances_dict[stemmed_term].frequency
@@ -144,7 +147,7 @@ class InvertedIndex:
         query = re.sub(r"[^\w\s]", "", query)
 
         query = query.split(" ")
-        query = map(lambda x: self.stemmer().stem(x), query)
+        # query = map(lambda x: self.stemmer().stem(x), query)
 
         # open posting list
         with open(self.posting_lists_file, "r+b") as f:
@@ -157,23 +160,39 @@ class InvertedIndex:
                 val = self.mmap.get(q, "")
 
                 if( val != "" ): # key exists
-                    startpos = vbcode.decode(val[0])[0]
-                    endpos = startpos + vbcode.decode(val[1])[0]
+                    startpos = val[0]
+                    endpos = startpos + val[1]
 
-                    posting_list = mm[startpos:(endpos-1)]
-                    posting_list = ast.literal_eval(posting_list.decode("utf-8") )
+                    posting_list = mm[startpos:endpos+1]
 
-                    i = 0
-                    for element in posting_list:
-                        if( i == 0 ): 
-                            dd[ element[0] ].append( element[1] )
-                            previousDocId = element[0]
-                        else: 
-                            docId = int(vbcode.decode(element[0])[0]) +  previousDocId
-                            dd[ docId ].append( element[1] )
-                            previousDocId = docId
+                    a = bytearray(posting_list)
 
-                        i = i+1
+                    start = 0                    
+                   # previousDocId = 0
+                                        
+                    while start < len(a) :
+
+                        if(len(a[start:start+2]) < 2):
+                            break
+
+                        print(a[start:start+10])
+                        print(a[start:start+2])
+                        print(a[start+2:start+3])
+                      #  print(len(a[start:start+2]))
+     
+                        frequency = int.from_bytes(a[start:start+2], byteorder='big')/100
+                        docId_length = int.from_bytes(a[start+2:start+3], byteorder='big')
+                        
+                        #print(docId_length)
+                        print(a[start+3:start+3+docId_length])
+
+                        docId = int(vbcode.decode(a[start+3:start+3+docId_length])[0]) #+  previousDocId
+                        print(docId)
+
+                        dd[ docId ].append( frequency )
+                       # previousDocId = docId
+
+                        start = start + 3 + docId_length
 
                 
             # find the 3 top elements
@@ -182,7 +201,7 @@ class InvertedIndex:
             for key,value in dd.items(): 
                 arr.append([key, sum(value)])
             
-            arr = sorted(arr, key=lambda w: w[1])
-
-            print(arr)
+            arr = sorted(arr, key=lambda w: -w[1]) # sort desc
             mm.close()
+
+            return arr
