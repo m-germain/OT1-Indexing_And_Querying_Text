@@ -3,11 +3,14 @@ import ast
 import mmap
 import vbcode
 import statistics
+from datetime import datetime
+
 from collections import defaultdict
 from math import log10
 from Appearance import Appearance
 from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer
+
 
 class InvertedIndex:
     """
@@ -41,6 +44,9 @@ class InvertedIndex:
         self.posting_lists_file = posting_lists
 
     def prepareForPrint(self):
+        """
+        Prepare the PL to be printed in a file
+        """
         n_doc = self.store.count()
 
         # foreach term
@@ -58,16 +64,6 @@ class InvertedIndex:
             # sort by docID
             i=0
             posting_list = sorted(posting_list, key=lambda w: w.getDocId())
-
-            # for element in posting_list:
-            #    current = element.getDocId()
-
-            #    if(i > 0): 
-            #        diff = int(current)-int(previous)
-            #        element.updateDocID( diff )
-                    
-            #    previous = current
-            #    i = i+1               
                 
             self.index.update({ term[0]: posting_list })
 
@@ -109,8 +105,10 @@ class InvertedIndex:
         # Dictionary with each term and the frequency it appears in the text.
         for term in terms:
             if term.lower() not in self.stop_words:
-                #stemmed_term = self.stemmer().stem(term)
-                stemmed_term = term.strip()
+
+                # Here you can activate the stemming.
+                # stemmed_term = self.stemmer().stem(term).lower()
+                stemmed_term = term.strip().lower()
 
                 term_frequency = (
                     appearances_dict[stemmed_term].frequency
@@ -144,6 +142,8 @@ class InvertedIndex:
         # TODO More advanced search engine W/ word 2 vect, similarity and better treatment of more then 1 word in query.
         # we could use some steming when reading the query
 
+        begin = datetime.now()
+        
         query = re.sub(r"[^\w\s]", "", query)
 
         query = query.split(" ")
@@ -175,24 +175,13 @@ class InvertedIndex:
                         if(len(a[start:start+2]) < 2):
                             break
 
-                       # DEBUG
-                       # ------------------
-                       # print(a[start:start+10])
-                       # print(a[start:start+2])
-                       # print(a[start+2:start+3])
-                       # print(len(a[start:start+2]))
-     
                         frequency = int.from_bytes(a[start:start+2], byteorder='big')/100
                         docId_length = int.from_bytes(a[start+2:start+3], byteorder='big')
                         
-                        #print(docId_length)
-                        #print(a[start+3:start+3+docId_length])
 
                         docId = int(vbcode.decode(a[start+3:start+3+docId_length])[0]) #+  previousDocId
-                        #print(docId)
 
                         dd[ docId ].append( frequency )
-                       # previousDocId = docId
 
                         start = start + 3 + docId_length
 
@@ -206,4 +195,6 @@ class InvertedIndex:
             arr = sorted(arr, key=lambda w: -w[1]) # sort desc
             mm.close()
 
-            return arr
+            finish = datetime.now()
+
+            return arr, (finish - begin)

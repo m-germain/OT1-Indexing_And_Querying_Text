@@ -34,19 +34,32 @@ def shrink_text(text):
 def main():
     store = Storage()
 
-    files = glob.glob("data/*")
+    files = glob.glob("../data/*")
     documents = []
-    
-    for file_path in files[:10]:
+
+    number_of_files = len(files)
+
+    # Change here the faction of the files you want to read.
+    # Use the same number as the one used in Create Index.py
+    cut = int(number_of_files/32)
+
+    for file_path in files[:cut]:
         file_reader = FileReader(file_path)
         documents += file_reader.listDoc
 
+    # We create an empty index
     index = InvertedIndex(store)
-    index.loadInvertedIndex("mmap", "posting_lists")
-   
-    search_term = input("Enter term(s) to search: ")
-    result = index.lookup_query(search_term) 
 
+    # We give it the access of the mmap and PL files
+    index.loadInvertedIndex("mmap", "posting_lists")
+
+
+    search_term = input("Enter term(s) to search: ")
+
+    # We query the index and retrive the sorted list of results
+    result,dtime = index.lookup_query(search_term) 
+
+    # We keep and display only the top K results.
     res = result[:3]
     for r in res:
         print("Score: "+ str(r[1]))
@@ -54,5 +67,8 @@ def main():
 
         print( highlight_term(doc.getId(), search_term.split(), doc.getFullText() ) )
         print("\n")
+
+    print(dtime)
+
 
 main()
